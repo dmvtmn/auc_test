@@ -1,0 +1,35 @@
+{% extends "template.html" %}
+{% block content %}
+  <h2>Bienvenue rapport Auchan</h2>
+  <p><a href="/logout">Logout</a></p>
+  <h3>Rajouter nouvelle data:</h3>
+  <form action="{{ url_for('add') }}" method="post" class="add">
+      <label><strong>UB:</strong></label>
+      <input name="ub" type="text">
+      <label><strong>Score Saturation:</strong></label>
+      <input name="score_saturation" type="text">
+      <label><strong>Score Performance:</strong></label>
+      <input name="score_performance" type="text">
+      <label><strong>Score Loyalty:</strong></label>
+      <input name="score_loyalty" type="text">
+      <label><strong>Score Dynamisme:</strong></label>
+      <input name="score_dynamisme" type="text">
+      <label><strong>Score Final:</strong></label>
+      <input name="score_final" type="text">
+      <br/>
+      <input class="button" type="submit" value="Save">
+  </form>
+  <br/>
+  <br/>
+  <h3>Points:</h3>
+{% for p in points %}
+  <strong>UB:</strong> {{ p.ub }} <br>
+  <strong>score_saturation:</strong> {{ p.score_saturation }} <br>
+  <strong>score_performance:</strong> {{ p.score_performance }} <br>
+  <strong>score_loyalty:</strong> {{ p.score_loyalty }} <br>
+  <strong>score_dynamisme:</strong> {{ p.score_dynamisme }} <br>
+  <strong>score_final:</strong> {{ p.score_final }} <br>
+  <br>
+{% endfor %}
+
+{% endblock %}
