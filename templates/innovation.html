@@ -1,0 +1,166 @@
+{% extends "template.html" %}
+
+{% block scripts %}
+
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Prepare the data
+        var data = google.visualization.arrayToDataTable([
+          ['Category', 'Week', 'Brand', 'Nr Customers'],
+          ['Nappies', 'wk1', 'Pampers', 776733],
+          ['Nappies', 'wk2', 'Pampers', 3694820],
+          ['Nappies', 'wk3', 'Pampers', 70708],
+          ['Milk', 'wk1', 'Candia', 8175173],
+          ['Milk', 'wk2', 'Candia', 857592],
+          ['Milk', 'wk3', 'Candia', 2193031]
+        ]);
+
+        // Define category pickers for 'Country', 'Region/State' and 'City'
+        var catPicker = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control1',
+          'options': {
+            'filterColumnLabel': 'Category',
+            'ui': {
+              'labelStacking': 'vertical',
+              'allowTyping': false,
+              'allowMultiple': false
+            }
+          }
+        });
+
+        var weekPicker = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control2',
+          'options': {
+            'filterColumnLabel': 'Week',
+            'ui': {
+              'labelStacking': 'vertical',
+              'allowTyping': false,
+              'allowMultiple': false
+            }
+          }
+        });
+
+        var brandPicker = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'control3',
+          'options': {
+            'filterColumnLabel': 'Brand',
+            'ui': {
+              'labelStacking': 'vertical',
+              'allowTyping': false,
+              'allowMultiple': false
+            }
+          }
+        });
+
+        // Define a bar chart to show 'Population' data
+        var lineChart = new google.visualization.ChartWrapper({
+          'chartType': 'LineChart',
+          'containerId': 'chart1',
+          'options': {
+            'width': 800,
+            'height': 400,
+            'chartArea': {top: 0, right: 0, bottom: 0}
+          },
+          // Configure the barchart to use columns 2 (Week) and 4 (Nr Customers)
+          'view': {'columns': [2, 3]}
+        });
+
+        // Create the dashboard.
+        new google.visualization.Dashboard(document.getElementById('dashboard')).
+          // Configure the controls so that:
+          // - the 'Country' selection drives the 'Region' one,
+          // - the 'Region' selection drives the 'City' one,
+          // - and finally the 'City' output drives the chart
+          bind(catPicker, weekPicker).
+          bind(weekPicker, brandPicker).
+          bind(brandPicker, lineChart).
+          // Draw the dashboard
+          draw(data);
+      }
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Produit');
+        data.addColumn('number', 'score_loyalty');
+        data.addColumn('number', 'score_saturation');
+        data.addColumn('number', 'score_dynamisme');
+        data.addColumn('boolean', 'Sommaire perf');
+        data.addRows([
+          ['innovation 1',  {v: 99, f: '99'},{v: 99, f: '99'},{v: 99, f: '99'}, true],
+          ['innovation 2',   {v:143,   f: '143'},{v: 99, f: '99'},{v: 99, f: '99'},  false],
+          ['innovation 3', {v: 14, f: '14'},{v: 99, f: '99'},{v: 99, f: '99'}, true],
+          ['innovation 4',   {v: 214,  f: '214'},{v: 99, f: '99'},{v: 99, f: '99'},  true]
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+      }
+
+
+      google.setOnLoadCallback(drawVisualization);
+      google.setOnLoadCallback(drawTable);
+    </script>
+
+{% endblock scripts %}
+
+{% block content %}
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <p>
+          <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROWkA9wsTzfKN0bIcRLhiItljkOUpZ9w3XRmvFz1lP1z14PEYW" alt="...">
+        </p>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Perfomance Globale</a></li>
+            <li><a href="#about">Detail produit</a></li>
+            <li><a href="#contact">Aide</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <!-- Begin page content -->
+    <div class="container">
+      <div class="page-header">
+        <h2>Suivi des innovations</h2>
+      </div>
+      <p class="lead">Detail des perfomances apres un lancement</p>
+      <div id="dashboard">
+      <table>
+        <tr style='vertical-align: top'>
+          <td style='width: 300px; font-size: 0.9em;'>
+            <div id="control1"></div>
+            <div id="control2"></div>
+            <div id="control3"></div>
+          </td>
+          <td style='width: 600px'>
+            <div style="float: left;" id="chart1"></div>
+            <div style="float: left;" id="chart2"></div>
+            <div style="float: left;" id="chart3"></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>Detail produit</h3>
+    <div id="table_div">
+    </div>
+    </div>
+  </hr>
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Note legal: toutes les infos inclues dans ce report sont confidentielles. nous vous prions de le respecter</p>
+      </div>
+    </footer>
+
+{% endblock content %}

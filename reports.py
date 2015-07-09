@@ -1,4 +1,4 @@
-# blog.py - controller
+# reports.py - controller
 
 # imports
 from flask import Flask, render_template, request, session, \
@@ -6,21 +6,15 @@ from flask import Flask, render_template, request, session, \
 import sqlite3
 from functools import wraps
 
-# configuration
-DATABASE = 'offre.db'
-USERNAME = 'admin'
-PASSWORD = 'admin'
-SECRET_KEY = 'hard_to_guess'
-
 app = Flask(__name__)
 
-# pulls in configurations by looking for UPPERCASE variables
-app.config.from_object(__name__)
+# pulls in configurations by looking for UPPERCASE variables within the config file
+app.config.from_object('_config')
 
 
-# function used for connecting to the database
+# helper function -  function used for connecting to the database
 def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    return sqlite3.connect(app.config['DATABASE_PATH'])
 
 def login_required(test):
     @wraps(test)
@@ -40,8 +34,16 @@ def login():
             error = 'Invalid Credentials. Please try again.'
         else:
             session['logged_in'] = True
+            flash("Bienvenue")
             return redirect(url_for('main'))
     return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash("Merci pour votre visite")
+    return redirect(url_for('login'))
+
 
 @app.route('/main')
 @login_required
@@ -50,13 +52,8 @@ def main():
     cur = g.db.execute('select * from ubscores')
     points = [dict(ub=row[0], score_saturation=row[1], score_performance=row[2], score_loyalty=row[3], score_dynamisme = row[4], score_final = row[5]) for row in cur.fetchall()]
     g.db.close()
-    return render_template('main.html', points = points)
+    return render_template('innovation.html', points = points)
 
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('login'))
 
 @app.route('/add', methods=['POST'])
 @login_required
